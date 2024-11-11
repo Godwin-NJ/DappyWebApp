@@ -6,20 +6,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace DappWeb.Pages.Categories
 {
     //[BindProperty]
-    public class CreateModel : PageModel
+    public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _db;
         //[BindProperty]
         public Category Category { get; set; }
 
-        public CreateModel(ApplicationDbContext db)
+        public EditModel(ApplicationDbContext db)
         {
             _db = db;
         }
        
-        public void OnGet()
+        public void OnGet(int id)
         {
-           
+            Category = _db.Categories.FirstOrDefault(x => x.Id == id);
         }
 
         public async Task<IActionResult> OnPost(Category category) 
@@ -32,9 +32,9 @@ namespace DappWeb.Pages.Categories
             //server side validation
             if (ModelState.IsValid)
             {
-                await _db.Categories.AddAsync(category);
+                 _db.Categories.Update(category);
                 await _db.SaveChangesAsync();
-                TempData["success"] = "Category created successfully";
+                TempData["success"] = "Category updated successfully";
                 return RedirectToPage("Index");
             }
            
